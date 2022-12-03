@@ -4,7 +4,8 @@
   "description": "AOC 2022",
   "scripts": {
     "day:1": "ts-node ./day_01/index.ts",
-    "day:2": "ts-node ./day_02/index.ts"
+    "day:2": "ts-node ./day_02/index.ts",
+    "day:3": "ts-node ./day_03/index.ts"
   },
   "author": "Jarkko Skyttälä",
   "dependencies": {},

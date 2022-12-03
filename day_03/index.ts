@@ -1,46 +1,9 @@
 import { readFileSync } from 'fs';
-import { pipe, flow, S, NEA, sum, A, O, divide, stringFromCharCode } from '../utils/fp-utils';
+import { pipe, flow, S, NEA, sum, A, O, stringFromCharCode } from '../utils/fp-utils';
 
-const groupsOf =
-  <T>(n: number) =>
-  (list: T[]): T[][] => {
-    if (A.isEmpty(list)) {
-      return [];
-    }
+const stringToCharArray = (s: string) => pipe(s, S.split(''), NEA.fromReadonlyNonEmptyArray);
 
-    return A.prepend(A.takeLeft(n)(list))(groupsOf(n)(A.dropLeft(n)(list)) as T[][]);
-  };
-
-const intersection = ([f, s]: [string, string]) =>
-  pipe(
-    S.split('')(f),
-    NEA.fromReadonlyNonEmptyArray,
-    NEA.map((char) =>
-      pipe(
-        S.split('')(s),
-        NEA.fromReadonlyNonEmptyArray,
-        A.findFirst((c) => c === char),
-      ),
-    ),
-    A.filter(O.isSome),
-    A.map((x) => x.value),
-    A.uniq(S.Eq),
-  );
-
-const intersection3 = ([f, s, t]: [string, string, string]) =>
-  pipe(
-    intersection([f, s]),
-    A.map((x) => intersection([x, t])),
-    A.flatten,
-  );
-
-const splitStringAtMiddle = (input: string): [string, string] =>
-  pipe(
-    input,
-    S.size,
-    (length) => [divide(2)(length), length],
-    ([half, length]) => [S.slice(0, half)(input), S.slice(half, length)(input)],
-  );
+const splitStringAtMiddle = (input: string) => pipe(input, stringToCharArray, A.splitAt(S.size(input) / 2));
 
 const alphabets = (transformFn: (s: string) => string) =>
   pipe(NEA.range(65, 90), A.map(flow(stringFromCharCode, transformFn)));
@@ -54,14 +17,18 @@ const priority = (item: string) =>
     O.getOrElse(() => 0),
   );
 
-pipe(
+const input = pipe(
   readFileSync('./day_03/input.txt').toString('utf-8'),
   S.split('\r\n'),
   NEA.fromReadonlyNonEmptyArray,
+);
+
+pipe(
+  input,
   A.map(
     flow(
       splitStringAtMiddle,
-      intersection,
+      ([f, s]) => A.intersection(S.Eq)(f)(s),
       NEA.fromArray,
       O.map(flow(NEA.head, priority)),
       O.getOrElse(() => 0),
@@ -72,13 +39,15 @@ pipe(
 );
 
 pipe(
-  readFileSync('./day_03/input.txt').toString('utf-8'),
-  S.split('\r\n'),
-  NEA.fromReadonlyNonEmptyArray,
-  groupsOf(3),
-  A.map((group) =>
-    pipe(
-      intersection3(group as [string, string, string]),
+  input,
+  A.chunksOf(3),
+  A.map(
+    flow(
+      ([f, s, t]) =>
+        pipe(
+          A.intersection(S.Eq)(stringToCharArray(f))(stringToCharArray(s)),
+          A.intersection(S.Eq)(stringToCharArray(t)),
+        ),
       NEA.fromArray,
       O.map(flow(NEA.head, priority)),
       O.getOrElse(() => 0),

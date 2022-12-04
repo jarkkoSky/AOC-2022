@@ -6,12 +6,13 @@ import * as E from 'fp-ts/lib/Either';
 import * as S from 'fp-ts/lib/string';
 import * as Ord from 'fp-ts/lib/Ord';
 import * as N from 'fp-ts/lib/number';
+import * as SG from 'fp-ts/lib/Semigroup';
 
 import * as NEA from 'fp-ts/lib/NonEmptyArray';
 
 export { pipe, flow, constFalse, constTrue, constUndefined, R, A, O, E, NEA, S, Ord, N };
 
-export const sum = (arr: number[]) => A.reduce<number, number>(0, (prev, next) => prev + next)(arr);
+export const sum = (numbers: number[]) => pipe(numbers, SG.concatAll(N.SemigroupSum)(0));
 
 export const min = (arr: number[]) => A.reduce<number, number>(0, (prev, next) => Ord.min(N.Ord)(prev, next))(arr);
 

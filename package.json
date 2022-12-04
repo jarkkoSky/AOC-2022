@@ -5,7 +5,8 @@
   "scripts": {
     "day:1": "ts-node ./day_01/index.ts",
     "day:2": "ts-node ./day_02/index.ts",
-    "day:3": "ts-node ./day_03/index.ts"
+    "day:3": "ts-node ./day_03/index.ts",
+    "day:4": "ts-node ./day_04/index.ts"
   },
   "author": "Jarkko Skyttälä",
   "dependencies": {},

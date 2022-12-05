@@ -27,3 +27,18 @@ export const stringFromCharCode = (code: number) => String.fromCharCode(code);
 
 export const alphabets = (transformFn: (s: string) => string) =>
   pipe(NEA.range(65, 90), A.map(flow(stringFromCharCode, transformFn)));
+
+export const isLetter = (char: any) =>
+  pipe(
+    alphabets(S.toLowerCase),
+    A.findIndex((x) => x === S.toLowerCase(char)),
+    O.match(
+      () => false,
+      () => true,
+    ),
+  );
+
+export const stringToCharArray = (s: string) => pipe(s, S.split(''), NEA.fromReadonlyNonEmptyArray);
+
+export const containsLetter = (str: string) =>
+  pipe(alphabets(S.toUpperCase), A.intersection(S.Eq)(stringToCharArray(S.toUpperCase(str))), A.size, (l) => l > 0);

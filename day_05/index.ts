@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { pipe, flow, S, NEA, A, O, stringFromCharCode } from '../utils/fp-utils';
+import { pipe, flow, S, NEA, A, O, containsLetter, stringToCharArray, isLetter } from '../utils/fp-utils';
 
 type Stack = string[];
 type Stacks = Stack[];
@@ -55,27 +55,14 @@ const takeFromIndex = (fromIndex: number, toIndex: number, count: number, stacks
 const moveItem = (move: Move, stacks: Stacks, count = 1) =>
   pipe(takeFromIndex(move.from, move.to, count, stacks), deleteFromIndex(move.from, count));
 
-const stringToCharArray = (s: string) => pipe(s, S.split(''), NEA.fromReadonlyNonEmptyArray);
-
-const alphabets = () => pipe(NEA.range(65, 90), A.map(flow(stringFromCharCode, S.toUpperCase)));
-
-const isLetter = (char: any) =>
-  pipe(
-    alphabets(),
-    A.findIndex((x) => x === char),
-    O.match(
-      () => false,
-      () => true,
-    ),
-  );
-
-const containsLetter = (str: string) =>
-  pipe(alphabets(), A.intersection(S.Eq)(stringToCharArray(str)), A.size, (l) => l > 0);
-
-const stacks = pipe(
+const input = pipe(
   readFileSync('./day_05/input.txt').toString('utf-8'),
   S.split('\r\n'),
   NEA.fromReadonlyNonEmptyArray,
+);
+
+const stacks = pipe(
+  input,
   A.map(
     flow(
       (x) => (containsLetter(x) ? O.some(x) : O.none),
@@ -100,14 +87,7 @@ const stacks = pipe(
   ),
 );
 
-const moves = pipe(
-  readFileSync('./day_05/input.txt').toString('utf-8'),
-  S.split('\r\n'),
-  NEA.fromReadonlyNonEmptyArray,
-  A.map(flow((x) => (x.includes('move') ? O.some(x) : O.none))),
-  A.compact,
-  A.map(parseMove),
-);
+const moves = pipe(input, A.map(flow((x) => (x.includes('move') ? O.some(x) : O.none))), A.compact, A.map(parseMove));
 
 pipe(
   moves,

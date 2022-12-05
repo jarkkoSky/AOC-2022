@@ -45,7 +45,7 @@ const takeFromIndex = (fromIndex: number, toIndex: number, count: number, stacks
         pipe(
           A.lookup(fromIndex)(stacks),
           O.map(A.takeRight(count)),
-          O.getOrElseW(() => [] as string[]),
+          O.getOrElse(() => [] as string[]),
         ),
       )(stack),
     ),
@@ -71,7 +71,7 @@ const stacks = pipe(
   ),
   A.compact,
   A.reverse,
-  A.reduceWithIndex([] as Stacks, (verticalIndex, acc, letters) =>
+  A.reduce([] as Stacks, (acc, letters) =>
     pipe(
       letters,
       A.reduceWithIndex(acc, (i, accumulator, letterArr) => {
@@ -80,7 +80,7 @@ const stacks = pipe(
         return pipe(
           accumulator,
           A.modifyAt(i, (stack) => (letter !== '' ? A.append(letter)(stack) : stack)),
-          O.getOrElseW(() => A.append([letter] as Stack)(accumulator)),
+          O.getOrElseW(() => A.append([letter])(accumulator)),
         );
       }),
     ),

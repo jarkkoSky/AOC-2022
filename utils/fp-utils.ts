@@ -11,7 +11,9 @@ import * as Eq from 'fp-ts/lib/Eq';
 
 import * as NEA from 'fp-ts/lib/NonEmptyArray';
 
-export { pipe, flow, constFalse, constTrue, constUndefined, R, A, O, E, NEA, S, Ord, N, Eq, identity };
+import { aperture } from 'fp-ts-std/Array';
+
+export { pipe, flow, constFalse, constTrue, constUndefined, R, A, O, E, NEA, S, Ord, N, Eq, identity, aperture };
 
 export const sum = (numbers: number[]) => pipe(numbers, Sg.concatAll(N.SemigroupSum)(0));
 

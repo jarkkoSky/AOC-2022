@@ -8,12 +8,13 @@ import * as Ord from 'fp-ts/lib/Ord';
 import * as N from 'fp-ts/lib/number';
 import * as Sg from 'fp-ts/lib/Semigroup';
 import * as Eq from 'fp-ts/lib/Eq';
+import * as Bo from 'fp-ts/lib/boolean';
 
 import * as NEA from 'fp-ts/lib/NonEmptyArray';
 
 import { aperture } from 'fp-ts-std/Array';
 
-export { pipe, flow, constFalse, constTrue, constUndefined, R, A, O, E, NEA, S, Ord, N, Eq, identity, aperture };
+export { pipe, flow, constFalse, constTrue, constUndefined, R, A, O, E, NEA, S, Ord, N, Eq, identity, aperture, Bo };
 
 export const sum = (numbers: number[]) => pipe(numbers, Sg.concatAll(N.SemigroupSum)(0));
 
